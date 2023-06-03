@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@metaplex-foundation/js": "^0.19.4",
+    "@metaplex-foundation/mpl-token-metadata": "^2.12.0",
+    "@solana/pay": "^0.2.5",
+    "@solana/spl-token": "^0.3.8",
+    "@solana/web3.js": "^1.77.3",
+    "bignumber.js": "^9.1.1",
+    "bs58": "^5.0.0",
+    "dotenv": "^16.1.3",
+    "react-qr-code": "^2.0.11"
+  }
+}
