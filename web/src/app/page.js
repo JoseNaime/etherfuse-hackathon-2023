@@ -5,7 +5,7 @@ import Image from "next/image";
 import OnePayment from "@/components/OnePayment";
 
 const carInforTest = {
-    plates: "ABC-45-67",
+    plates: "ABC-12-34",
     toPay: 5000,
     place: {
         address: "Calle 1, 123",
@@ -41,7 +41,7 @@ export default function Home() {
                            type="text"
                            placeholder="LLL-NN-NN"
                            onChange={(e) => setPlatesToSearch(e.target.value)}></input>
-                    <button onClick={handleSearch} disabled={isLoading}>Buscar</button>
+                    <button className="primary-button" onClick={handleSearch} disabled={isLoading}>Buscar</button>
                 </div>
             </div>
             <div id="car-info-container" className={carInfo ? "active relative" : "relative "}>
@@ -70,7 +70,7 @@ export default function Home() {
                                 </div>
                                 <hr className="vertical"/>
                                 <div className="flex flex-1 items-center justify-center">
-                                    <OnePayment />
+                                    <OnePayment toPay={ carInfo.toPay} CorralonKey={"4B3NVCiWfxEnYzuNgGsbaCETJGUcKqgXkTEtDgnp76rp"}/>
                                 </div>
                             </div>
                         </div>

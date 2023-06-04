@@ -8,26 +8,21 @@ import {
     Transaction,
     PublicKey,
     LAMPORTS_PER_SOL,
-    clusterApiUrl,
-    sendTransactionError,
+    clusterApiUrl
 } from '@solana/web3.js';
 
 const SOLANA_NETWORK = "devnet";
 
-const OnePayment = ({CorralonKey}) => {
+const OnePayment = ({toPay, CorralonKey}) => {
     const [publicKey, setPublicKey] = useState(null);
     const [balance, setBalance] = useState(0);
-    const [amount, setAmount] = useState(0);
     const [exlorerUrl, setExlorerUrl] = useState(null);
 
-    const handleAmountChange = (event) => {
-        setAmount(event.target.value);
-        console.log("amount", amount);
-    };
+    const CONVERTION_RATE_SOL_MXN = 373.86
+    const toPayInSol = toPay / CONVERTION_RATE_SOL_MXN
+
 
     const handleSubmit = async (event) => {
-        console.log("receptor", CorralonKey);
-        console.log("amount", amount);
         sendTransaction();
     };
 
@@ -98,7 +93,7 @@ const OnePayment = ({CorralonKey}) => {
             getBalance(publicKey);
 
             // si el balance es menor la cantidad a enviar
-            if (balance < amount) {
+            if (balance < toPayInSol) {
                 toast.error("No tienes suficiente balance");
                 return;
             }
@@ -116,7 +111,7 @@ const OnePayment = ({CorralonKey}) => {
                 SystemProgram.transfer({
                     fromPubkey,
                     toPubkey,
-                    lamports: amount * LAMPORTS_PER_SOL,
+                    lamports: toPayInSol * LAMPORTS_PER_SOL,
                 })
             );
 
@@ -142,7 +137,6 @@ const OnePayment = ({CorralonKey}) => {
 
             // Actualizar balance
             getBalance(publicKey);
-            setAmount(0);
             return solanaExlorerUrl;
 
 
@@ -152,41 +146,58 @@ const OnePayment = ({CorralonKey}) => {
     };
 
     return (
-        <div>
-            <Toaster position="top-center" reverseOrder={false} />
+        <div className={'w-3/5 '}>
+            <Toaster position="bottom-right" reverseOrder={false} />
             <div>
                 {publicKey ? (
                     <div>
-                        <p className={"blue-gradient-text"}>
-                            <aside>Tu key es:</aside>
-                            {publicKey}</p>
-                        <p>Tu balance es: <br /> <h3>{balance} SOL</h3></p>
+                        <div className="mt-5 flex flex-row justify-end">
+                            <p className="opacity-50 mr-2">Balance </p>
+                            <p className='blue-gradient-text opacity-80 font-bold'>{balance} SOL</p>
+                        </div>
+                        <div className={"flex justify-between w-full"}>
 
-                        <input
-                            type="text" value={amount}
-                            onChange={(e) => {
-                                handleAmountChange(e)
-                            }
-                            }
-                        />
-                        <div>
+                            <p className="font-bold">Origen </p>
+                            <a className={"blue-gradient-text text-right"}
+                               href={`https://explorer.solana.com/address/${publicKey}`}>{publicKey.slice(0, 4)}...{publicKey.slice(publicKey.length - 6, publicKey.length)}</a>
+                        </div>
+
+                        <div className="vertical-dots">
+                            <p>.</p><p>.</p><p>.</p>
+                        </div>
+                        <div className={"flex justify-between w-full"}>
+                            <p className="font-bold">Destino </p>
+                            <a className={"blue-gradient-text text-right"}
+                               href={`https://explorer.solana.com/address/${CorralonKey}`}
+                            >{CorralonKey.slice(0, 4)}...{CorralonKey.slice(CorralonKey.length - 6, CorralonKey.length)}</a>
+                        </div>
+
+                        <div className="mt-7 flex flex-col">
+                            <div id="total-display">
+                                <p>Total</p>
+                                <h6>{(toPay / CONVERTION_RATE_SOL_MXN).toFixed(6)} SOL</h6>
+                            </div>
+                            <p className={"text-gray-400 text-xm"}>1 SOL ~= 373.86 MXN</p>
+                        </div>
 
 
+                        <div className='flex justify-between mt-5 h-10'>
                             <button
+                                className="secondary-button"
                                 type='submit'
                                 onClick={() => {
                                     signOut()
                                 }}
-                            >
-                                Desconectar/Cancelar
+                            >Cancelar
                             </button>
                             <button
+                                className="primary-button"
                                 type='submit'
                                 onClick={() => {
                                     handleSubmit()
                                 }}
                             >
-                                Enviar
+                                Pagar
                             </button>
                         </div>
                         <a href={exlorerUrl}>
@@ -196,6 +207,7 @@ const OnePayment = ({CorralonKey}) => {
                 ) : (
                     <button
                         id="phantom-button"
+
                         type='submit'
                         onClick={() => signIn()}
                     >
