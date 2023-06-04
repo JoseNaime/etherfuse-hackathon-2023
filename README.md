@@ -16,8 +16,9 @@ Our project leverages these strengths, aiming to contribute a novel solution to 
 <br/>
 
 # Our Project...
+https://www.canva.com/design/DAFkzlSn7QU/5d70ROWcCv_PlOieYo3m0w/view?utm_content=DAFkzlSn7QU&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink
 
-Try
+
 ### Our solutionwas created with these tecnologies:
 <p float="left">
   <img src="./web/public/images/nextlogo.png" alt="NextJS_Logo" height=100/>
