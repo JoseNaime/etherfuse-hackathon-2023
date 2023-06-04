@@ -1,31 +1,28 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import { 
+import React, {useState, useEffect} from 'react';
+import toast, {Toaster} from 'react-hot-toast';
+import Image from "next/image";
+import {
     Connection,
     SystemProgram,
     Transaction,
     PublicKey,
     LAMPORTS_PER_SOL,
-    clusterApiUrl,
-    sendTransactionError,
+    clusterApiUrl
 } from '@solana/web3.js';
+
 const SOLANA_NETWORK = "devnet";
 
-const OnePayment = ({CorralonKey}) => {
+const OnePayment = ({toPay, CorralonKey}) => {
     const [publicKey, setPublicKey] = useState(null);
     const [balance, setBalance] = useState(0);
-    const [amount, setAmount] = useState(0);
     const [exlorerUrl, setExlorerUrl] = useState(null);
 
-    const handleAmountChange = (event) => {
-        setAmount(event.target.value);
-        console.log("amount", amount);
-    };
+    const CONVERTION_RATE_SOL_MXN = 373.86
+    const toPayInSol = toPay / CONVERTION_RATE_SOL_MXN
+
 
     const handleSubmit = async (event) => {
-        console.log("receptor", CorralonKey);
-        console.log("amount", amount);
         sendTransaction();
     };
 
@@ -34,9 +31,8 @@ const OnePayment = ({CorralonKey}) => {
         setPublicKey(key);
         if (key) getBalance(key);
         if (exlorerUrl)
-        setExlorerUrl(null);
+            setExlorerUrl(null);
     }, []);
-
 
 
     const signIn = async () => {
@@ -54,7 +50,7 @@ const OnePayment = ({CorralonKey}) => {
 
         // If phantom is installed
         let phantom;
-        if (provider?.isPhantom)phantom = provider;
+        if (provider?.isPhantom) phantom = provider;
 
         const {publicKey} = await phantom.connect(); // Connect to wallet
         console.log("publicKey", publicKey.toString());
@@ -95,10 +91,9 @@ const OnePayment = ({CorralonKey}) => {
         try {
             // Consultar el balance
             getBalance(publicKey);
-            console.log("balance", balance);
 
             // si el balance es menor la cantidad a enviar
-            if (balance < amount) {
+            if (balance < toPayInSol) {
                 toast.error("No tienes suficiente balance");
                 return;
             }
@@ -106,7 +101,7 @@ const OnePayment = ({CorralonKey}) => {
             // Si el balance es mayor a la cantidad a enviar    
             const provider = window?.phantom?.solana;
             const connection = new Connection(clusterApiUrl(SOLANA_NETWORK), 'confirmed');
-            
+
             //Llaves
             const fromPubkey = new PublicKey(publicKey);
             const toPubkey = new PublicKey(CorralonKey);
@@ -116,10 +111,9 @@ const OnePayment = ({CorralonKey}) => {
                 SystemProgram.transfer({
                     fromPubkey,
                     toPubkey,
-                    lamports: amount * LAMPORTS_PER_SOL,
+                    lamports: toPayInSol * LAMPORTS_PER_SOL,
                 })
             );
-            console.log("transaction", transaction);
 
             // Ultimo block de hash
             const {blockhash} = await connection.getLatestBlockhash();
@@ -131,13 +125,11 @@ const OnePayment = ({CorralonKey}) => {
 
             // Enviar transaccion
             const txid = await connection.sendRawTransaction(transaccionSinature.serialize());
-            console.info(`Transaccion enviada: ${txid}`);
 
             // Confirmar transaccion
             const confirmation = await connection.confirmTransaction(txid, {commitment: 'singleGossip'});
-            const { slot } = confirmation.value;
+            const {slot} = confirmation.value;
 
-            console.info(`Transaccion ${txid} confirmada en el slot: ${slot}`);
             const solanaExlorerUrl = `https://explorer.solana.com/tx/${txid}?cluster=${SOLANA_NETWORK}`;
             setExlorerUrl(solanaExlorerUrl);
 
@@ -145,75 +137,87 @@ const OnePayment = ({CorralonKey}) => {
 
             // Actualizar balance
             getBalance(publicKey);
-            setAmount(0);
             return solanaExlorerUrl;
 
 
         } catch (error) {
-            console.error("Error al enviar transaccion", error);
             toast.error("Error al enviar transaccion");
         }
     };
 
     return (
-      <div>
-        <Toaster position="top-center" reverseOrder={false}/>
-        <h1>Siga un solo proceso de pago directo</h1>
-        <div>
+        <div className={'w-3/5 '}>
+            <Toaster position="bottom-right" reverseOrder={false} />
             <div>
-
-            </div>
-            <div>
-                <h2>Paga con Phantom</h2>
                 {publicKey ? (
                     <div>
-                        <h3>Tu key es: {publicKey}</h3>
-                        <h3>Tu balance es: {balance} SOL</h3>
-                        <br/>
-                        <h3>Corralon Key: {CorralonKey}</h3>
-                        <br/>
-                        <h3>Cantidad de SOL a enviar:</h3>
-                        <input 
-                            type="text" value={amount}
-                            onChange={(e) => {handleAmountChange(e)}    
-                            }
-                        />
-                        <br/>
-                        <button
-                            type='submit'
-                            onClick={() => {handleSubmit()
-                            }}
-                        >
-                            Enviar 
-                        </button>
+                        <div className="mt-5 flex flex-row justify-end">
+                            <p className="opacity-50 mr-2">Balance </p>
+                            <p className='blue-gradient-text opacity-80 font-bold'>{balance} SOL</p>
+                        </div>
+                        <div className={"flex justify-between w-full"}>
 
-                        <br/>
+                            <p className="font-bold">Origen </p>
+                            <a className={"blue-gradient-text text-right"}
+                               href={`https://explorer.solana.com/address/${publicKey}`}>{publicKey.slice(0, 4)}...{publicKey.slice(publicKey.length - 6, publicKey.length)}</a>
+                        </div>
+
+                        <div className="vertical-dots">
+                            <p>.</p><p>.</p><p>.</p>
+                        </div>
+                        <div className={"flex justify-between w-full"}>
+                            <p className="font-bold">Destino </p>
+                            <a className={"blue-gradient-text text-right"}
+                               href={`https://explorer.solana.com/address/${CorralonKey}`}
+                            >{CorralonKey.slice(0, 4)}...{CorralonKey.slice(CorralonKey.length - 6, CorralonKey.length)}</a>
+                        </div>
+
+                        <div className="mt-7 flex flex-col">
+                            <div id="total-display">
+                                <p>Total</p>
+                                <h6>{(toPay / CONVERTION_RATE_SOL_MXN).toFixed(6)} SOL</h6>
+                            </div>
+                            <p className={"text-gray-400 text-xm"}>1 SOL ~= 373.86 MXN</p>
+                        </div>
 
 
-
-                        <button
-                            type='submit'
-                            onClick={() => {signOut()
-                            }}
-                        >
-                            Desconectar
-                        </button>
-                        <br/>
+                        <div className='flex justify-between mt-5 h-10'>
+                            <button
+                                className="secondary-button"
+                                type='submit'
+                                onClick={() => {
+                                    signOut()
+                                }}
+                            >Cancelar
+                            </button>
+                            <button
+                                className="primary-button"
+                                type='submit'
+                                onClick={() => {
+                                    handleSubmit()
+                                }}
+                            >
+                                Pagar
+                            </button>
+                        </div>
                         <a href={exlorerUrl}>
                             <h3 className="text-md font-bold text-blue-500">{exlorerUrl}</h3>
                         </a>
-                        <br/>
-                    </div> 
+                    </div>
                 ) : (
                     <button
+                        id="phantom-button"
+
                         type='submit'
                         onClick={() => signIn()}
-                    >Conectar</button>
+                    >
+                        <Image src={"/images/phantom_icon.jpg"} height={30} width={30} alt={"Phantom Logo"} />
+                        Paga con Phantom
+                    </button>
                 )}
             </div>
         </div>
-      </div>
     );
-  };
+};
 
 export default OnePayment;

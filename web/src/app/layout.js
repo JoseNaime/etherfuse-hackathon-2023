@@ -20,15 +20,12 @@ export default function RootLayout({children}) {
                   rel="stylesheet" />
         </Head>
 
-        <body className={inter.className + " h-full ove"}>
+        <body className={inter.className + " h-full "}>
         <NavBar />
         <main className={"h-full"}>
             {children}
-
         </main>
-
         </body>
-
         </html>
     )
 }
