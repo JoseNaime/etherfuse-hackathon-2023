@@ -17,6 +17,7 @@ Our project leverages these strengths, aiming to contribute a novel solution to 
 
 # Our Project...
 
+Try
 ### Our solutionwas created with these tecnologies:
 <img src="./web/public/images/nextlogo.png" alt="NextJS_Logo" height=100/>
 <img src="./web/public/images/Tailwind.png" alt="Tailwind_Logo" height=100/>
@@ -26,3 +27,5 @@ Our project leverages these strengths, aiming to contribute a novel solution to 
 ### The services we used in this iteration of our project are:
 <img src="./web/public/images/Phantomm.png" alt="Phantom_Logo" height=80/>
 <img src="./web/public/images/Decaf.png" alt="Decaf_Logo" height=80/>
+
+
