@@ -6,7 +6,7 @@ import OnePayment from "@/components/OnePayment";
 
 const carInforTest = {
     plates: "ABC-12-34",
-    toPay: 5000,
+    toPay: 1,
     place: {
         address: "Calle 1, 123",
         opensAt: "08:00",

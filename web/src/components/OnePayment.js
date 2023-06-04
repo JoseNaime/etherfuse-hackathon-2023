@@ -111,7 +111,7 @@ const OnePayment = ({toPay, CorralonKey}) => {
                 SystemProgram.transfer({
                     fromPubkey,
                     toPubkey,
-                    lamports: toPayInSol * LAMPORTS_PER_SOL,
+                    lamports: parseInt(toPayInSol * LAMPORTS_PER_SOL),
                 })
             );
 
@@ -199,9 +199,11 @@ const OnePayment = ({toPay, CorralonKey}) => {
                             >
                                 Pagar
                             </button>
+                            <br/>
                         </div>
-                        <a href={exlorerUrl}>
-                            <h3 className="text-md font-bold text-blue-500">{exlorerUrl}</h3>
+                        <br/>
+                        <a className="flex-1 break-words" href={exlorerUrl}>
+                            <h6 className="text-xs font-bold text-blue-500 w-full">{exlorerUrl}</h6>
                         </a>
                     </div>
                 ) : (
