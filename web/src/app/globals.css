@@ -1,3 +1,99 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+	--primary: #1467E4;
+	--border: #B0B0B0;
+	--placeholder: #B5B5B5;
+}
+
+@layer base {
+	html {
+		font-family: 'Open Sans', sans-serif;
+	}
+	
+	h1 {
+		font-style: normal;
+		font-weight: 800;
+		font-size: 96px;
+		line-height: 94.18%;
+	}
+}
+
+.wrapper {
+	display: flex;
+	width: 1080px;
+	margin: 0 auto;
+	height: 100%;
+}
+
+.background {
+	background-color: #FFF;
+}
+
+.blue-gradient-text {
+	background: linear-gradient(80.68deg, #0047FF -13.36%, #00A3FF 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+#plates-form {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#plates-form > * {
+	padding: 15px 20px;
+}
+
+#plates-form input {
+	flex: 3;
+	text-align: left;
+	border: 1px solid var(--border);
+	border-right: none;
+}
+
+#plates-form input::placeholder {
+	color: var(--placeholder);
+}
+
+#plates-form button{
+	color: white;
+	font-weight: 600;
+	flex: 1;
+	text-align: center;
+	background: var(--primary);
+	border: 1px solid var(--primary);
+	box-shadow: 0px 0px 100px rgba(0, 99, 255, 0.5);
+	transition: all 0.2s ease-in-out;
+}
+
+#plates-form button:disabled {
+	background: #B0B0B0;
+	border: 1px solid #B0B0B0;
+	box-shadow: none;
+}
+
+#title-container {
+	width: 555px;
+	transition: all 0.2s ease-in-out;
+}
+
+#title-container.active {
+	transform: translateX(-100%);
+}
+
+#car-info-container {
+	width: 1026px;
+	margin: auto;
+	transform: translateX(50%);
+	height: 100%;
+	transition: all 0.2s ease-in-out;
+}
+
+#car-info-container.active {
+	transform: translateX(0%);
+}
